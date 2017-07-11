@@ -1,5 +1,8 @@
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Iterator;
+
+import javax.security.auth.x500.X500Principal;
 
 public class SkipList<T extends Comparable<T>> implements Iterable<T> {
 	
@@ -76,6 +79,10 @@ public class SkipList<T extends Comparable<T>> implements Iterable<T> {
 		return size;
 	}
 	
+	public int getMaxHeight() {
+		return this.height;
+	}
+	
 	public T find(T val) {
 		if (this.size == 0) {
 			return null;
@@ -106,8 +113,14 @@ public class SkipList<T extends Comparable<T>> implements Iterable<T> {
 	}
 	
 	public Node<T> insert(T val) {
+		return delegate01(val);	// faster version
+//		return delegate02(val);
+	}
+	
+	public Node<T> delegate01(T val) {
 		// Firstly find the inserting position.
 		ArrayList<ArrayList<Node<T>>> prevs = new ArrayList<>();
+		
 		Node<T> cur = head;
 		int level = height - 1;
 		boolean flag = true;
@@ -166,6 +179,40 @@ public class SkipList<T extends Comparable<T>> implements Iterable<T> {
 		return node;
 	}
 	
+	public Node<T> delegate02(T val) {
+		// Firstly find the inserting position.
+		ArrayList<ArrayList<Node<T>>> prevs = new ArrayList<>();
+		Node<T> cur = findGreaterOrEqual(val, prevs);
+		
+		// Found it
+		if (cur != null && cur.getValue() != null && cur.getValue().compareTo(val) == 0)
+			return cur;
+		
+		// Insert a new node
+		size += 1;
+		int newHeight = RandInt.randInt(1, height+1);
+		Node<T> node = new Node<T>(newHeight);
+		node.setValue(val);
+		
+		int level = newHeight < height ? newHeight - 1 : height - 1;
+		while (level >= 0) {
+			node.setNext(level, prevs.get(height-level-1).get(level));
+			prevs.get(height-level-1).set(level, node);
+			level -= 1;
+		}
+		for (int i = height; i < newHeight; i++) {
+			head.addNext(node);
+			node.setNext(i, null);
+		}
+		
+		if (newHeight > height) {
+			height = newHeight;
+			head.setHeight(height);
+		}
+		
+		return node;
+	}
+	
 	public void delete(T val) {
 		// No element
 		if (size == 0)
@@ -190,6 +237,76 @@ public class SkipList<T extends Comparable<T>> implements Iterable<T> {
 		size -= (flag) ? 1 : 0;
 	}
 	
+	public Node<T> findGreaterOrEqual(final T key, ArrayList<ArrayList<Node<T>>> prev) {
+		int level = height - 1;
+		Node<T> cur = head;
+		while (true) {
+			Node<T> next = cur.getNext(level);
+			if (next != null && key.compareTo(next.getValue()) > 0) {
+				cur = next;
+			} else {
+				if (prev != null) {
+					if ((level + prev.size()) < height) {
+						prev.add(cur.getNexts());
+					} else {
+						prev.set(level, cur.getNexts());
+					}
+				}
+				if (level == 0) {
+					return next;
+				} else {
+					// Switch to next list
+					level--;
+				}
+			}
+		}
+	}
+	
+	public Node<T> fineLessThan(final T key) {
+		Node<T> cur = this.head;
+		int level = height - 1;
+		while (true) {
+			Node<T> next = cur.getNext(level);
+			if (next == null || key.compareTo(next.getValue()) < 0) {
+				if (level == 0) {
+					return cur;
+				} else {
+					// Switch to next list
+					level--;
+				}
+			} else {
+				cur = next;
+			}
+		}
+	}
+	
+	public Node<T> findLast() {
+		Node<T> cur = head;
+		int level = height - 1;
+		while (true) {
+			Node<T> next = cur.getNext(level);
+			if (next == null) {
+				if (level == 0) {
+					return cur;
+				} else {
+					// Switch to next level
+					level--;
+				}
+			} else {
+				cur = next;
+			}
+		}
+	}
+	
+	public boolean contains(T val) {
+		Node<T> cur = findGreaterOrEqual(val, null);
+		if (cur != null && val.compareTo(cur.getValue()) == 0) {
+			return true;
+		} else {
+			return false;
+		}
+	}
+	
 	public String toString() {
 		String ret = "Size: " + size + '\n';
 		for (int i = height-1; i >= 0; i--) {
@@ -210,7 +327,7 @@ public class SkipList<T extends Comparable<T>> implements Iterable<T> {
 		return ret;
 	}
 	
-	ArrayList<T> nodes() {
+	public ArrayList<T> nodes() {
 		ArrayList<T> ret = new ArrayList<>();
 		Node<T> cur = head;
 		while (cur.getNext(0) != null) {

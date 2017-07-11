@@ -13,7 +13,8 @@ public class ACDoubleArraySkipListTrieTest {
 	public static void main(String[] args) throws IOException {
 		ACDoubleArraySkipListTrie acDoubleArraySkipListTrie = new ACDoubleArraySkipListTrie();
 		
-		String str = "C:\\Users\\Deng\\Desktop\\ahocorasick\\benchmark\\cn\\dictionary.txt";
+//		String str = "C:\\Users\\Deng\\Desktop\\ahocorasick\\benchmark\\cn\\dictionary.txt";
+		String str = "D:\\files\\dev\\python\\filter\\blackwords\\sensitive_words\\baidu_filter.txt";
 		Path path = FileSystems.getDefault().getPath(str);
 		
 		ArrayList<String> keys = (ArrayList<String>) Files.readAllLines(path);
@@ -24,8 +25,9 @@ public class ACDoubleArraySkipListTrieTest {
 		System.out.println("Build time: " + (end - start) + "ns");
 		
 		// UTF-8
-		String tmp = "C:\\Users\\Deng\\Desktop\\ahocorasick\\benchmark\\cn\\text.txt";
-		String content = new String(Files.readAllBytes(Paths.get(tmp/*"C:\\Users\\Deng\\Desktop\\ahocorasick\\benchmark\\cn\\text.txt"*/)), "UTF-8");
+//		String tmp = "C:\\Users\\Deng\\Desktop\\ahocorasick\\benchmark\\cn\\text.txt";
+//		String content = new String(Files.readAllBytes(Paths.get(tmp/*"C:\\Users\\Deng\\Desktop\\ahocorasick\\benchmark\\cn\\text.txt"*/)), "UTF-8");
+		String content = "世界反法西斯联盟";
 		// System.out.println(content);
 		start = System.nanoTime();
 		List<Range> v = acDoubleArraySkipListTrie.parseText(content);
@@ -42,7 +44,7 @@ public class ACDoubleArraySkipListTrieTest {
 			System.exit(0);
 		}
 		for (int i = 0; i < finalResult.size(); i++) {
-//			System.out.println(finalResult.get(i).getStart() + " -> " + finalResult.get(i).getEnd());
+			System.out.println(finalResult.get(i).getStart() + " -> " + finalResult.get(i).getEnd());
 		}
 		System.out.println(finalResult.size());
 		int i;

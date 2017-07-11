@@ -122,18 +122,6 @@ public class ACDoubleArraySkipListTrie implements Serializable {
 		l = (int[]) in.readObject();
 	}
 
-//	public V get(String key) {
-//		int index = exactMatchSearch(key);
-//		if (index >= 0) {
-//			return v[index];
-//		}
-//
-//		return null;
-//	}
-
-//	public V get(int index) {
-//		return v[index];
-//	}
 
 	public interface IHit {
 		void hit(int begin, int end);

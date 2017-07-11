@@ -13,7 +13,7 @@ import java.util.concurrent.LinkedBlockingQueue;
 
 public class SkipListTrie extends Trie {
 	@SuppressWarnings("unused")
-	private final String TAG = "TRIE";
+	private final String TAG = "SKIPLIST_TRIE";
 	
 	private Node head;
 	private short[] lengths;
@@ -101,43 +101,6 @@ public class SkipListTrie extends Trie {
 		
 		return ret && ref.isValid();
 	}
-	
-//	public ArrayList<Integer> coverText(String text) {
-//		CodePointIterator codePointInterator = new CodePointIterator(text);
-//		char ch;
-//		Node cur = this.head;
-//		Node tmp;
-//		int position = 0;
-//		ArrayList<Integer> ranges = new ArrayList<>();
-//		while (codePointInterator.hasNext()) {
-//			ch = codePointInterator.next();
-//			if ((tmp = cur.nextState(ch)) == null) {	// Jump to upper level
-//				cur = cur.getFailure();
-//				Node afterTrans = cur.nextState(ch);
-//				while (afterTrans == null) {
-//					cur = cur.getFailure();
-//					afterTrans = cur.nextState(ch);
-//					if (cur == this.head) {
-//						break;
-//					}
-//				}
-//				if (afterTrans != null) {
-//					cur = afterTrans;
-//				}
-//			} else {
-//				cur = tmp;
-//			}
-//			
-//			position++;
-//			Collection<Integer> outputs = cur.getOutputs();
-//			for (Integer output: outputs) {
-//				ranges.add(position-this.lengths[output]);
-//				ranges.add(position);
-//			}
-//		}
-//		
-//		return ranges;
-//	}
 	
 	public ArrayList<Range> coverText(String text) {
 		ArrayList<Range> ranges = (ArrayList<Range>) parseText(text);

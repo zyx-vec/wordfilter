@@ -30,7 +30,8 @@ public class SkipListTrieTest {
 		
 		ArrayList<String> keys = new ArrayList<>();
 		
-		String str = "C:\\Users\\Deng\\Desktop\\ahocorasick\\benchmark\\cn\\dictionary.txt";
+		// String str = "C:\\Users\\Deng\\Desktop\\ahocorasick\\benchmark\\cn\\dictionary.txt";
+		String str = "D:\\files\\dev\\python\\filter\\blackwords\\sensitive_words\\baidu_filter.txt";
 		Path path = FileSystems.getDefault().getPath(str);
 		
 		keys = (ArrayList<String>) Files.readAllLines(path);
@@ -41,7 +42,8 @@ public class SkipListTrieTest {
 		System.out.println("Time: " + (afterBuild - start) + "ns");
 		
 		// UTF-8 matters: 2017/4/26
-		String content = new String(Files.readAllBytes(Paths.get("C:\\Users\\Deng\\Desktop\\ahocorasick\\benchmark\\cn\\text.txt")), "UTF-8");
+//		String content = new String(Files.readAllBytes(Paths.get("C:\\Users\\Deng\\Desktop\\ahocorasick\\benchmark\\cn\\text.txt")), "UTF-8");
+		String content = "ÖÐ¹ú";
 		
 		start = System.nanoTime();
 		int count = mSkipListTrie.match(content);
@@ -51,10 +53,12 @@ public class SkipListTrieTest {
 		
 		
 		ArrayList<Range> rangest = mSkipListTrie.coverText(content);
-		for (int i = 0; i < rangest.size(); i++) {
-//			System.out.println(rangest.get(i).getStart() + " -> " + rangest.get(i).getEnd());
+		if (rangest != null) {
+			for (int i = 0; i < rangest.size(); i++) {
+				System.out.println(rangest.get(i).getStart() + " -> " + rangest.get(i).getEnd());
+			}
+			System.out.println(rangest.size());
 		}
-		System.out.println(rangest.size());
 		
 		new Scanner(System.in).nextLine();
 	}
